@@ -1,122 +1,147 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useState } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { useAuthStore } from './features/auth/store';
+import { useFamilyStore } from './features/family/store';
 
-function App() {
-  const [count, setCount] = useState(0)
+import Login from './features/auth/pages/Login';
+import Signup from './features/auth/pages/Signup';
+import CreateFamily from './features/family/pages/CreateFamily';
+import AddMembers from './features/family/pages/AddMembers';
+import MemberProfile from './features/family/pages/MemberProfile';
+import MembersPage from './features/family/pages/MembersPage';
+import FamilyAnalyticsDashboard from './features/analytics/pages/FamilyAnalyticsDashboard';
+import Dashboard from './features/dashboard/pages/Dashboard';
+import DashboardLayout from './layouts/DashboardLayout';
 
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+import FinancePage from './features/finance/pages/FinancePage';
+import FinanceAnalyticsDashboard from './features/analytics/pages/FinanceAnalyticsDashboard';
+import HealthPage from './features/health/pages/HealthPage';
+import HealthAnalyticsDashboard from './features/analytics/pages/HealthAnalyticsDashboard';
+import MemberHealthDetail from './features/health/pages/MemberHealthDetail';
+import EmergencyModePage from './features/health/pages/EmergencyModePage';
+import EducationPage from './features/education/pages/EducationPage';
+import EducationAnalyticsDashboard from './features/analytics/pages/EducationAnalyticsDashboard';
+import MemberEducationDetail from './features/education/pages/MemberEducationDetail';
+import PlacesPage from './features/places/pages/PlacesPage';
+import PlacesAnalyticsDashboard from './features/analytics/pages/PlacesAnalyticsDashboard';
+import DocumentsPage from './features/documents/pages/DocumentsPage';
+import DocumentsAnalyticsDashboard from './features/analytics/pages/DocumentsAnalyticsDashboard';
+import AlertsPage from './features/alerts/pages/AlertsPage';
+import AiPage from './features/ai/pages/AiPage';
+import PermissionsPage from './features/permissions/pages/PermissionsPage';
+import PermissionsAnalyticsDashboard from './features/analytics/pages/PermissionsAnalyticsDashboard';
+import SettingsPage from './features/settings/pages/SettingsPage';
 
-      <div className="ticks"></div>
+function AuthGate() {
+  const [authView, setAuthView] = useState('login');
+  const navigate = useNavigate();
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+  const handleSuccess = () => {
+    navigate('/dashboard');
+  };
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+  return authView === 'login' ? (
+    <Login onSwitchToSignup={() => setAuthView('signup')} onLoginSuccess={handleSuccess} />
+  ) : (
+    <Signup onSwitchToLogin={() => setAuthView('login')} onSignupSuccess={handleSuccess} />
+  );
 }
 
-export default App
+function OnboardingGate() {
+  const [step, setStep] = useState('createFamily');
+  const navigate = useNavigate();
+
+  if (step === 'createFamily') {
+    return <CreateFamily onFamilyCreated={() => navigate('/dashboard')} />;
+  }
+  return <AddMembers onDone={() => navigate('/dashboard')} />;
+}
+
+function DashboardRoute() {
+  const navigate = useNavigate();
+  return <Dashboard onSelectMember={(id) => navigate('/member/' + id)} />;
+}
+
+function MemberProfileRoute() {
+  const navigate = useNavigate();
+  const memberId = window.location.pathname.split('/member/')[1];
+  return <MemberProfile memberId={memberId} onBack={() => navigate('/dashboard')} />;
+}
+
+function Protected({ children }) {
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const family = useFamilyStore((s) => s.family);
+
+  if (!isAuthenticated) return <Navigate to="/auth" replace />;
+  if (!family) return <Navigate to="/onboarding" replace />;
+  return children;
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/auth" element={<AuthGate />} />
+        <Route path="/onboarding" element={<OnboardingGate />} />
+
+        <Route
+          path="/dashboard"
+          element={
+            <Protected>
+              <DashboardLayout>
+                <DashboardRoute />
+              </DashboardLayout>
+            </Protected>
+          }
+        />
+        <Route
+          path="/members"
+          element={
+            <Protected>
+              <DashboardLayout>
+                <MembersPage />
+              </DashboardLayout>
+            </Protected>
+          }
+        />
+        <Route path="/analytics/family" element={<Protected><FamilyAnalyticsDashboard /></Protected>} />
+        <Route
+          path="/member/:id"
+          element={
+            <Protected>
+              <DashboardLayout>
+                <MemberProfileRoute />
+              </DashboardLayout>
+            </Protected>
+          }
+        />
+
+        <Route path="/finance" element={<Protected><DashboardLayout><FinancePage /></DashboardLayout></Protected>} />
+        <Route path="/analytics/finance" element={<Protected><FinanceAnalyticsDashboard /></Protected>} />
+
+        <Route path="/health" element={<Protected><DashboardLayout><HealthPage /></DashboardLayout></Protected>} />
+        <Route path="/analytics/health" element={<Protected><HealthAnalyticsDashboard /></Protected>} />
+        <Route path="/health/:id" element={<Protected><DashboardLayout><MemberHealthDetail /></DashboardLayout></Protected>} />
+        <Route path="/emergency" element={<Protected><EmergencyModePage /></Protected>} />
+
+        <Route path="/education" element={<Protected><DashboardLayout><EducationPage /></DashboardLayout></Protected>} />
+        <Route path="/analytics/education" element={<Protected><EducationAnalyticsDashboard /></Protected>} />
+        <Route path="/education/:id" element={<Protected><DashboardLayout><MemberEducationDetail /></DashboardLayout></Protected>} />
+
+        <Route path="/places" element={<Protected><DashboardLayout><PlacesPage /></DashboardLayout></Protected>} />
+        <Route path="/analytics/places" element={<Protected><PlacesAnalyticsDashboard /></Protected>} />
+        <Route path="/documents" element={<Protected><DashboardLayout><DocumentsPage /></DashboardLayout></Protected>} />
+        <Route path="/analytics/documents" element={<Protected><DocumentsAnalyticsDashboard /></Protected>} />
+        <Route path="/alerts" element={<Protected><DashboardLayout><AlertsPage /></DashboardLayout></Protected>} />
+        <Route path="/ai" element={<Protected><DashboardLayout><AiPage /></DashboardLayout></Protected>} />
+        <Route path="/permissions" element={<Protected><DashboardLayout><PermissionsPage /></DashboardLayout></Protected>} />
+        <Route path="/analytics/permissions" element={<Protected><PermissionsAnalyticsDashboard /></Protected>} />
+        <Route path="/settings" element={<Protected><DashboardLayout><SettingsPage /></DashboardLayout></Protected>} />
+
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default App;

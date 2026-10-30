@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadein {
+  animation: fadein 0.25s ease-out;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #78a2d4;
+  border-radius: 9999px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+/* Global card hover lift - applies to every rounded-2xl white card */
+.bg-white.border.border-slate-200.rounded-2xl,
+.bg-white.border.border-slate-100.rounded-2xl {
+  transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+}
+
+.bg-white.border.border-slate-200.rounded-2xl:hover {
+  box-shadow: 0 8px 24px -8px rgba(15, 23, 42, 0.12);
+}
+
+/* Small interactive rows (member cards, list items) get a subtle lift */
+button.border.border-slate-100.rounded-xl,
+button.border.border-slate-100.rounded-xl:hover {
+  transition: all 0.15s ease;
+}
+
+button.border.border-slate-100.rounded-xl:hover {
+  transform: translateY(-1px);
+}
